@@ -1,3 +1,4 @@
+
 function prompt_full_pwd --description 'Print the current working directory, NOT shortened to fit the prompt'
     if test "$PWD" != "$HOME"
         printf "%s" (echo $PWD|sed -e 's|/private||' -e "s|^$HOME|~|")
@@ -14,15 +15,15 @@ function fish_prompt
     if not set -q __fish_prompt_hostname
         set -g __fish_prompt_hostname (hostname|cut -d . -f 1)
     end
-
     if not set -q __fish_prompt_char
         switch (id -u)
         case 0
             set -g __fish_prompt_char '#'
         case '*'
-            set -g __fish_prompt_char '$'
+            set -g __fish_prompt_char ''(set_color red)'❯'(set_color yellow)'❯'(set_color green)'❯ '
         end
     end
+#(set_color red)'❯'(set_color yellow)'❯'(set_color green)'❯ '
 
     # Setup colors
     set -l bold (set_color -o)
@@ -73,13 +74,9 @@ function fish_prompt
       set pcolor $red
     end
 
-    set -l _date (printf '%s' (date "+%a %b %d"))
-    set -l _time (printf '%s' (date +%H:%M:%S))
-
     # Top
-    echo -n "⋊>" $user_style$USER$normal at $host_style$__fish_prompt_hostname$normal in $bold$blue(prompt_full_pwd)$normal
+    echo -n "⋊>" $user_style$USER$normal@$host_style$__fish_prompt_hostname$normal: $bold$blue(prompt_full_pwd)$normal
     __fish_git_prompt
-    echo -n "" since $green$_date $cyan$_time$normal
 
     echo
 
